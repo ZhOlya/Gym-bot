@@ -7,10 +7,7 @@ public class Main {
 
     public static void main(String[] args) throws TelegramApiException {
 
-        //UserMessage.treatmentText("nok lo lo");
-        System.out.println(UserMessage.getParThree());
-
-
+        DataBase.connectToSQL();
 
 
 
