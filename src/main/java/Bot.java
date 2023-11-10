@@ -8,6 +8,12 @@ public class Bot extends TelegramLongPollingBot {
 
      static String messageText = "test";
 
+     static Long idChat;
+
+    public static Long getIdChat() {
+        return idChat;
+    }
+
     public static String getMessageText() {
         return messageText;
     }
@@ -22,12 +28,14 @@ public class Bot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()){ //если обновление имеет сообщение и сообщение является текстом
             Message message = update.getMessage(); //присвоение объекту сообщения от пользователя
             messageText = message.getText();
+            idChat = message.getChatId();
+
 
             long chatld = message.getChatId();// определение индетификатора чата, в который было отправлено сообщение
             SendMessage response = new SendMessage();// Объект для отправки ответного сообщения
             response.setChatId(String.valueOf(chatld));//установление индетификатора чата, куда будет отправлено сообщение
             response.setText("Hello. I am your GYM bot");
-            System.out.println("Message from user " + message.getText() + "\n" + messageText);
+            System.out.println("Class BOT. Message from user: " + messageText + ". Id chat: " + idChat);
             DataBase.connectToSQL();
             messageText = "";
             try{
