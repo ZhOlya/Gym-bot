@@ -6,9 +6,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot {
 
-     static String messageText = "test";
+     private static String messageText = "";
 
-     static Long idChat;
+     private static Long idChat;
 
     public static Long getIdChat() {
         return idChat;
@@ -23,6 +23,8 @@ public class Bot extends TelegramLongPollingBot {
         return "6906636100:AAG4YHQ3sxfaI_pstJO3osfsYQ0JBJR0UqQ";
     }
 
+    static SendMessage response = new SendMessage();// Объект для отправки ответного сообщения
+
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()){ //если обновление имеет сообщение и сообщение является текстом
@@ -30,13 +32,13 @@ public class Bot extends TelegramLongPollingBot {
             messageText = message.getText();
             idChat = message.getChatId();
 
-
             long chatld = message.getChatId();// определение индетификатора чата, в который было отправлено сообщение
-            SendMessage response = new SendMessage();// Объект для отправки ответного сообщения
+
             response.setChatId(String.valueOf(chatld));//установление индетификатора чата, куда будет отправлено сообщение
-            response.setText("Hello. I am your GYM bot");
-            System.out.println("Class BOT. Message from user: " + messageText + ". Id chat: " + idChat);
+
+//            response.setText("Hello. I am your GYM bot");
             DataBase.connectToSQL();
+//            System.out.println("Class BOT. Message from user: " + messageText + ". Id chat: " + idChat + "\n"); //Check
             messageText = "";
             try{
                 execute(response);
@@ -44,8 +46,8 @@ public class Bot extends TelegramLongPollingBot {
                 e.printStackTrace();
             }
         }
-
     }
+
 
     @Override
     public String getBotUsername() {

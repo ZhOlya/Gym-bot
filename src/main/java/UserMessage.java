@@ -2,11 +2,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class UserMessage {
 
-    static String partOne = "";
-    static String partTwo = "";
-    static String parThree = "";
+    private static String partOne = "";
+    private static String partTwo = "";
+    private static String parThree = "";
 
-    static String command = "";
+    private static String command = "";
 
     public static String getCommand() {
         return command;
@@ -28,13 +28,19 @@ public class UserMessage {
 
     public static void definingCommandAndRest (String text){
         String trimText = text.trim();
-        int indexSplit = trimText.indexOf(' ');
-        command = trimText.substring(0,indexSplit);
-        String threePartText = trimText.substring(indexSplit + 1);
-        if (command.equalsIgnoreCase("add")){
-            splitTextForAdd(threePartText);
+        if (!trimText.contains(" ")){
+            command = trimText;
+            System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command + "\n");
+        } else {
+            int indexSplit = trimText.indexOf(' ');
+            command = trimText.substring(0,indexSplit);
+            String threePartText = trimText.substring(indexSplit + 1);
+            if (command.equalsIgnoreCase("add")) {
+                splitTextForAdd(threePartText);
+                System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command +
+                        ". Add`s data are " + threePartText + "\n");
+            }
         }
-        System.out.println("Class UserMessage, method definingCommandAndRest. " + command + " " + threePartText);
     }
 
 
@@ -46,9 +52,9 @@ public class UserMessage {
             partOne = text.substring(0, spaceIndexOne);
             partTwo = text.substring(spaceIndexOne + 1, spaceIndexTwo);
             parThree = text.substring(spaceIndexTwo + 1);
-            System.out.println("Class UserMessage, text and method splitText: " + text + " " + partOne + partTwo + parThree);
+            System.out.println("Class UserMessage, text and method splitText: " + text + " " + partOne + partTwo + parThree + "\n");
         } else {
-            System.out.println("Sorry. Input message doesn`t has three parts." + partOne + partTwo + parThree);
+            System.out.println("Sorry. Input message doesn`t has three parts." + partOne + partTwo + parThree + "\n");
         }
     }
 

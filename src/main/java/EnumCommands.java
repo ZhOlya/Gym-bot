@@ -1,8 +1,10 @@
 public enum EnumCommands {
     ADD,
-    LASTWEEK,
-    LASTMONTH,
-    LASTHALFYEAR;
+    WEEK,
+    MONTH,
+    HALFYEAR,
+    INFO
+
 
 
 }
