@@ -26,10 +26,18 @@ public class UserMessage {
 
     //Разделение сообщения пользователя на первое слово (команда) и остальную часть
 
+
+
     public static void definingCommandAndRest (String text){
         String trimText = text.trim();
         if (!trimText.contains(" ")){
-            command = trimText;
+            //проверка первого символа, если это "/", то удаляем его
+            char firstSymbol = trimText.charAt(0);
+            if (firstSymbol == '/'){
+                command = trimText.substring(1);
+            }else {
+                command = trimText;
+            }
             System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command + "\n");
         } else {
             int indexSplit = trimText.indexOf(' ');
@@ -49,7 +57,7 @@ public class UserMessage {
         if (treatmentTextBool(text)){
             int spaceIndexOne = text.indexOf(' ');
             int spaceIndexTwo = text.lastIndexOf(' ');
-            partOne = text.substring(0, spaceIndexOne);
+            partOne = text.substring(0, spaceIndexOne).toLowerCase();
             partTwo = text.substring(spaceIndexOne + 1, spaceIndexTwo);
             parThree = text.substring(spaceIndexTwo + 1);
             System.out.println("Class UserMessage, text and method splitText: " + text + " " + partOne + partTwo + parThree + "\n");

@@ -6,6 +6,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import java.time.LocalDate;
 
 public class Main {
+    static TelegramBotsApi telegramBotsApi;
 
     public static void main(String[] args) throws TelegramApiException {
 
@@ -15,18 +16,13 @@ public class Main {
 //        DataBase.connectToSQL();
 
 
-
-
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-
+       telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             telegramBotsApi.registerBot(new Bot());
 
         }catch (TelegramApiException e){
             e.printStackTrace();
         }
-
-
 
     }
 }

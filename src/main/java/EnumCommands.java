@@ -3,8 +3,6 @@ public enum EnumCommands {
     WEEK,
     MONTH,
     HALFYEAR,
-    INFO
-
-
-
+    INFO,
+    GRAPH
 }
