@@ -20,6 +20,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -38,6 +40,8 @@ import java.util.Date;
 
 
 public class DataBase {
+
+    private static final Logger loggerDataBase = LoggerFactory.getLogger(DataBase.class);
     static String text = "";
     static String url = "jdbc:mysql://localhost:3306/gymbot?useUnicode=true&serverTimezone=UTC&useSSL=false";
     static String user = "root";
@@ -53,7 +57,13 @@ public class DataBase {
         text = Bot.getMessageText();
         UserMessage.definingCommandAndRest(text);
         String command = UserMessage.getCommand().toUpperCase();
-        EnumCommands enumCommands = EnumCommands.valueOf(command);
+        EnumCommands enumCommands = null;
+        //Проверка на наличие определенной команды, если нет совпадения, то присваиваем команду дефолт
+        try {
+            enumCommands = EnumCommands.valueOf(command);
+        } catch (IllegalArgumentException e){
+            enumCommands = EnumCommands.DEFAULT;
+        }
         System.out.println("Class DataBase, method connectToSQL. Command from user is " + command + "\n");
         try{
             connection = DriverManager.getConnection(url, user, pass);
@@ -64,14 +74,13 @@ public class DataBase {
                 case HALFYEAR -> showResultLastHalfYear();
                 case INFO -> getInfo();
                 case GRAPH -> sendGraph();
-                default -> System.out.println("Error command");
+                default -> Bot.response.setText("Sorry, I don`t understand you.");
             }
             connection.close();
         }catch(SQLException e) {
-            e.printStackTrace();
+            loggerDataBase.error("Error occurred in Database class: ", e);
         }
     }
-
 
 
     public static void addDataInDB() throws SQLException {
@@ -89,17 +98,17 @@ public class DataBase {
             //Вывод в консоль БД
 
             ResultSet resultSet = statement.executeQuery("SELECT * FROM exercises ORDER BY id DESC LIMIT 1 ");
-            StringBuilder messafeToUser = new StringBuilder();
+            StringBuilder messageToUser = new StringBuilder();
             while (resultSet.next()){
                 String name = resultSet.getString("nameExercise");
                 String countTime = resultSet.getString("countTime");
                 String countApproaches = resultSet.getString("countApproaches");
                 String date = resultSet.getString("date");
-                messafeToUser.append("Exercise is added. " + "\n" + name + ". Number of times - " + countTime +
+                messageToUser.append("Exercise is added. " + "\n" + name + ". Number of times - " + countTime +
                         ". Number of approaches - " + countApproaches + ". Date " + date + "\n");
-                System.out.println("Class DataBase, addDataDB. " + name +" " + countTime);
+                System.out.println("Class DataBase, addDataDB. " + name +" " + countTime + " " + countApproaches);
             }
-            Bot.response.setText(messafeToUser.toString());
+            Bot.response.setText(messageToUser.toString());
     }
 
     public static void showResultLastWeek(){
@@ -181,43 +190,29 @@ public class DataBase {
                 This command shows your statistic of last 6 months
                                 
                 6. graph
-                This command shows your activity as a graph for the lust month""";
+                This command shows your activity as a graph for the last month""";
         Bot.response.setText(messageInfo);
     }
 
-//    public void sendGraph (String idChat){
-//        getStatisticsGraph(idChat);
-//        SendPhoto request = new SendPhoto();
-//        request.setChatId(idChat);
-//        request.setPhoto(new InputFile("Exercises_Chart.png"));
-//        try {
-//
-//        } catch (TelegramApiException e){
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
-
+    //Создание и отправка графика
     public static void sendGraph(){
         String idChat = String.valueOf(Bot.getIdChat());
         getStatisticsGraph(idChat);
         new Bot().sendGraph(idChat);
     }
 
-
-
+    //непостедственно создание графика
     public static void getStatisticsGraph (String idChat) {
-//        date = LocalDate.now();
-//        String endDate = String.valueOf(date);
-//        String startDate = String.valueOf(date.minusMonths(1));
+        date = LocalDate.now();
+        String endDate = String.valueOf(date);
+        String startDate = String.valueOf(date.minusMonths(1));
 
         try {
             PreparedStatement statement = connection.prepareStatement
-                    ("SELECT nameExercise, countTime*countApproaches AS quantity, date FROM exercises WHERE idChat = ? ORDER BY date");
+                    ("SELECT nameExercise, countTime*countApproaches AS quantity, date FROM exercises WHERE idChat = ? AND date BETWEEN ? AND ? ORDER BY date");
             statement.setString(1, idChat);
-//            statement.setString(2, startDate);
-//            statement.setString(3, endDate);
+            statement.setString(2, startDate);
+            statement.setString(3, endDate);
             ResultSet resultSet = statement.executeQuery();
             TimeSeriesCollection dataset = new TimeSeriesCollection();
             TimeSeries series;
@@ -269,8 +264,6 @@ public class DataBase {
 
             }
 
-
-
             DateAxis axis = (DateAxis) plot.getDomainAxis();
             axis.setDateFormatOverride(new SimpleDateFormat("yyyy-MM-dd"));
 
@@ -278,10 +271,8 @@ public class DataBase {
             ChartUtilities.saveChartAsPNG(new File("C:\\Personal\\Olga\\Study\\Gym-bot\\graph\\Exercises_Chart.png"), chart, 1800, 1200);
 
         } catch (SQLException e){
-            e.printStackTrace();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            loggerDataBase.error("Error occurred in DataBase class (make graph)", e);
+        } catch (ParseException | IOException e) {
             throw new RuntimeException(e);
         }
     }

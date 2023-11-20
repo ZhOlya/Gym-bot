@@ -4,5 +4,6 @@ public enum EnumCommands {
     MONTH,
     HALFYEAR,
     INFO,
-    GRAPH
+    GRAPH,
+    DEFAULT
 }

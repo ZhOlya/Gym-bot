@@ -1,27 +1,21 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.time.LocalDate;
-
 public class Main {
-    static TelegramBotsApi telegramBotsApi;
+
+    private static final Logger loggerMain = LoggerFactory.getLogger(Main.class);
+
 
     public static void main(String[] args) throws TelegramApiException {
-
-/*        UserMessage.treatmentText("nok lo lo");
-        System.out.println(UserMessage.getParThree());*/
-
-//        DataBase.connectToSQL();
-
-
-       telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+        TelegramBotsApi telegramBot = new TelegramBotsApi(DefaultBotSession.class);
         try {
-            telegramBotsApi.registerBot(new Bot());
+            telegramBot.registerBot(new Bot());
 
         }catch (TelegramApiException e){
-            e.printStackTrace();
+            loggerMain.error("Error occurred on Main class", e);
         }
 
     }

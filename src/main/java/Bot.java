@@ -1,3 +1,5 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -9,6 +11,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 
 public class Bot extends TelegramLongPollingBot {
+
+    private static final Logger loggerBot = LoggerFactory.getLogger(Bot.class);
 
      private static String messageText = "";
 
@@ -34,24 +38,16 @@ public class Bot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()){ //если обновление имеет сообщение и сообщение является текстом
             Message message = update.getMessage(); //присвоение объекту сообщения от пользователя
             messageText = message.getText();
-            idChat = message.getChatId();
-
-            long chatld = message.getChatId();// определение индетификатора чата, в который было отправлено сообщение
-
-            response.setChatId(String.valueOf(chatld));//установление индетификатора чата, куда будет отправлено сообщение
-
-//            response.setText("Hello. I am your GYM bot");
+            idChat = message.getChatId(); // определение индетификатора чата, в который было отправлено сообщение
+            response.setChatId(String.valueOf(idChat));//установление индетификатора чата, куда будет отправлено сообщение
             DataBase.connectToSQL();
-//            System.out.println("Class BOT. Message from user: " + messageText + ". Id chat: " + idChat + "\n"); //Check
-//            messageText = "";
             try{
                 execute(response);
             } catch (TelegramApiException e){
-                e.printStackTrace();
+                loggerBot.error("Error occurred in Bot class (update)", e);
             }
         }
     }
-
 
     @Override
     public String getBotUsername() {
@@ -68,7 +64,7 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendPhotoRequest);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            loggerBot.error("Error occurred in Bot class (sendGraph) ", e);
         }
     }
 }

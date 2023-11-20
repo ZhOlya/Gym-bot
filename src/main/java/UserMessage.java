@@ -1,6 +1,10 @@
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserMessage {
+
+    private static final Logger loggerUseMessage = LoggerFactory.getLogger (UserMessage.class);
 
     private static String partOne = "";
     private static String partTwo = "";
@@ -29,24 +33,29 @@ public class UserMessage {
 
 
     public static void definingCommandAndRest (String text){
-        String trimText = text.trim();
-        if (!trimText.contains(" ")){
-            //проверка первого символа, если это "/", то удал€ем его
-            char firstSymbol = trimText.charAt(0);
-            if (firstSymbol == '/'){
-                command = trimText.substring(1);
-            }else {
-                command = trimText;
-            }
-            System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command + "\n");
-        } else {
-            int indexSplit = trimText.indexOf(' ');
-            command = trimText.substring(0,indexSplit);
-            String threePartText = trimText.substring(indexSplit + 1);
-            if (command.equalsIgnoreCase("add")) {
-                splitTextForAdd(threePartText);
-                System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command +
-                        ". Add`s data are " + threePartText + "\n");
+        if (text.isEmpty()){
+            Bot.response.setText("Sorry, I don`t understand you");
+        }
+        else {
+            String trimText = text.trim();
+            if (!trimText.contains(" ")) {
+                //проверка первого символа, если это "/", то удал€ем его
+                char firstSymbol = trimText.charAt(0);
+                if (firstSymbol == '/') {
+                    command = trimText.substring(1);
+                } else {
+                    command = trimText;
+                }
+//                System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command + "\n");
+            } else {
+                int indexSplit = trimText.indexOf(' ');
+                command = trimText.substring(0, indexSplit);
+                String threePartText = trimText.substring(indexSplit + 1);
+                if (command.equalsIgnoreCase("add")) {//¬озможно, эта проверка и не нужна, потому что имеетс€ только одна команда, содержаща€ пробелы ADD
+                    splitTextForAdd(threePartText);
+//                    System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command +
+//                            ". Add`s data are " + threePartText + "\n");
+                }
             }
         }
     }
@@ -66,12 +75,7 @@ public class UserMessage {
         }
     }
 
-    public static void clearPartsOfText(){
-        partOne = "";
-        partTwo = "";
-        parThree = "";
-    }
-    //ћетод, котороый првер€ет сообщател€ на количество пробелов. ≈сли их два, то возвращает текст, если нет то возращает ??????7??
+    //ћетод, котороый првер€ет сообщение на количество пробелов.
     static boolean treatmentTextBool (@NotNull String text){
         int countSpace = 0;
         for (int i = 0; i < text.length(); i++) {
@@ -81,18 +85,5 @@ public class UserMessage {
         }
         return countSpace == 2;
     }
-//    public static void treatmentTextVoid (String text){
-//        int countSpace = 0;
-//        for (int i = 0; i < text.length(); i++) {
-//            if (text.charAt(i) == ' '){
-//                countSpace++;
-//            }
-//            if (countSpace == 2){
-//                splitText(text);
-//            } else {
-//                System.out.println("Wrong enter message");
-//            }
-//        }
-//    }
 
 }
