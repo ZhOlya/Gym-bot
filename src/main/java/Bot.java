@@ -31,15 +31,15 @@ public class Bot extends TelegramLongPollingBot {
         return "6906636100:AAG4YHQ3sxfaI_pstJO3osfsYQ0JBJR0UqQ";
     }
 
-    static SendMessage response = new SendMessage();// Объект для отправки ответного сообщения
+    static SendMessage response = new SendMessage();// РћР±СЉРµРєС‚ РґР»СЏ РѕС‚РїСЂР°РІРєРё РѕС‚РІРµС‚РЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()){ //если обновление имеет сообщение и сообщение является текстом
-            Message message = update.getMessage(); //присвоение объекту сообщения от пользователя
+        if (update.hasMessage() && update.getMessage().hasText()){ //РµСЃР»Рё РѕР±РЅРѕРІР»РµРЅРёРµ РёРјРµРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ Рё СЃРѕРѕР±С‰РµРЅРёРµ СЏРІР»СЏРµС‚СЃСЏ С‚РµРєСЃС‚РѕРј
+            Message message = update.getMessage(); //РїСЂРёСЃРІРѕРµРЅРёРµ РѕР±СЉРµРєС‚Сѓ СЃРѕРѕР±С‰РµРЅРёСЏ РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
             messageText = message.getText();
-            idChat = message.getChatId(); // определение индетификатора чата, в который было отправлено сообщение
-            response.setChatId(String.valueOf(idChat));//установление индетификатора чата, куда будет отправлено сообщение
+            idChat = message.getChatId(); // РѕРїСЂРµРґРµР»РµРЅРёРµ РёРЅРґРµС‚РёС„РёРєР°С‚РѕСЂР° С‡Р°С‚Р°, РІ РєРѕС‚РѕСЂС‹Р№ Р±С‹Р»Рѕ РѕС‚РїСЂР°РІР»РµРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ
+            response.setChatId(String.valueOf(idChat));//СѓСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РёРЅРґРµС‚РёС„РёРєР°С‚РѕСЂР° С‡Р°С‚Р°, РєСѓРґР° Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»РµРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ
             DataBase.connectToSQL();
             try{
                 execute(response);
@@ -59,7 +59,7 @@ public class Bot extends TelegramLongPollingBot {
         response.setText("This image shows a graph of your activity");
         SendPhoto sendPhotoRequest = new SendPhoto();
         sendPhotoRequest.setChatId(chatId);
-        sendPhotoRequest.setPhoto(new InputFile(new File("C:\\Personal\\Olga\\Study\\Gym-bot\\graph\\Exercises_Chart.png")));
+        sendPhotoRequest.setPhoto(new InputFile(new File("C:\\OlgaZh\\01 Study\\Gym-bot\\graph\\Exercises_Chart.png")));
 
         try {
             execute(sendPhotoRequest);

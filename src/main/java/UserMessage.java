@@ -28,9 +28,7 @@ public class UserMessage {
         return parThree;
     }
 
-    //Разделение сообщения пользователя на первое слово (команда) и остальную часть
-
-
+    //Р Р°Р·РґРµР»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РїРµСЂРІРѕРµ СЃР»РѕРІРѕ (РєРѕРјР°РЅРґР°) Рё РѕСЃС‚Р°Р»СЊРЅСѓСЋ С‡Р°СЃС‚СЊ
 
     public static void definingCommandAndRest (String text){
         if (text.isEmpty()){
@@ -39,7 +37,7 @@ public class UserMessage {
         else {
             String trimText = text.trim();
             if (!trimText.contains(" ")) {
-                //проверка первого символа, если это "/", то удаляем его
+                //РїСЂРѕРІРµСЂРєР° РїРµСЂРІРѕРіРѕ СЃРёРјРІРѕР»Р°, РµСЃР»Рё СЌС‚Рѕ "/", С‚Рѕ СѓРґР°Р»СЏРµРј РµРіРѕ
                 char firstSymbol = trimText.charAt(0);
                 if (firstSymbol == '/') {
                     command = trimText.substring(1);
@@ -51,7 +49,7 @@ public class UserMessage {
                 int indexSplit = trimText.indexOf(' ');
                 command = trimText.substring(0, indexSplit);
                 String threePartText = trimText.substring(indexSplit + 1);
-                if (command.equalsIgnoreCase("add")) {//Возможно, эта проверка и не нужна, потому что имеется только одна команда, содержащая пробелы ADD
+                if (command.equalsIgnoreCase("add")) {//Р’РѕР·РјРѕР¶РЅРѕ, СЌС‚Р° РїСЂРѕРІРµСЂРєР° Рё РЅРµ РЅСѓР¶РЅР°, РїРѕС‚РѕРјСѓ С‡С‚Рѕ РёРјРµРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕРґРЅР° РєРѕРјР°РЅРґР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РїСЂРѕР±РµР»С‹ ADD
                     splitTextForAdd(threePartText);
 //                    System.out.println("Class UserMessage, method definingCommandAndRest. Command is " + command +
 //                            ". Add`s data are " + threePartText + "\n");
@@ -61,7 +59,7 @@ public class UserMessage {
     }
 
 
-    //Разделение текста на три составляющие
+    //Р Р°Р·РґРµР»РµРЅРёРµ С‚РµРєСЃС‚Р° РЅР° С‚СЂРё СЃРѕСЃС‚Р°РІР»СЏСЋС‰РёРµ
     public static void splitTextForAdd(String text){
         if (treatmentTextBool(text)){
             int spaceIndexOne = text.indexOf(' ');
@@ -75,7 +73,7 @@ public class UserMessage {
         }
     }
 
-    //Метод, котороый прверяет сообщение на количество пробелов.
+    //РњРµС‚РѕРґ, РєРѕС‚РѕСЂРѕС‹Р№ РїСЂРІРµСЂСЏРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ РЅР° РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕР±РµР»РѕРІ.
     static boolean treatmentTextBool (@NotNull String text){
         int countSpace = 0;
         for (int i = 0; i < text.length(); i++) {

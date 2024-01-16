@@ -30,55 +30,96 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 
 public class DataBase {
 
     private static final Logger loggerDataBase = LoggerFactory.getLogger(DataBase.class);
     static String text = "";
-    static String url = "jdbc:mysql://localhost:3306/gymbot?useUnicode=true&serverTimezone=UTC&useSSL=false";
-    static String user = "root";
-    static String pass = "root";
+
+    static Properties properties = new Properties();
+    static String url = "";
+    static String user = "";
+    static String pass = "";
 
     static Connection connection;
     static LocalDate date;
 
     private static ArrayList<String> showResultToUser;
+    static EnumCommands enumCommands = null;
+    static String command;
 
-
-    public static void connectToSQL(){
+    public static void definitionOfCommand (){//Проверка на наличие определенной команды, если нет совпадения, то присваиваем команду дефолт
         text = Bot.getMessageText();
         UserMessage.definingCommandAndRest(text);
-        String command = UserMessage.getCommand().toUpperCase();
-        EnumCommands enumCommands = null;
-        //Проверка на наличие определенной команды, если нет совпадения, то присваиваем команду дефолт
+        command = UserMessage.getCommand().toUpperCase();
+
         try {
             enumCommands = EnumCommands.valueOf(command);
         } catch (IllegalArgumentException e){
             enumCommands = EnumCommands.DEFAULT;
         }
         System.out.println("Class DataBase, method connectToSQL. Command from user is " + command + "\n");
-        try{
-            connection = DriverManager.getConnection(url, user, pass);
-            switch (enumCommands){
-                case ADD -> addDataInDB();
-                case WEEK -> showResultLastWeek();
-                case MONTH -> showResultLastMonth();
-                case HALFYEAR -> showResultLastHalfYear();
-                case INFO -> getInfo();
-                case GRAPH -> sendGraph();
-                default -> Bot.response.setText("Sorry, I don`t understand you.");
+
+    }
+
+
+
+    public static void connectToSQL(){
+        //Считываение конфигурационного файла (ссылка, логин, пароль ДБ)
+//        try {
+//            properties.load(new FileInputStream("src/main/resources/database.properties"));
+//        }catch (Exception e){
+//            loggerDataBase.error("The error to read config file");
+//        }
+
+        try {
+            InputStream input = DataBase.class.getClassLoader().getResourceAsStream("database.properties");
+
+            if (input == null){
+                loggerDataBase.error("Unable to find database.properties");
+                return;
             }
-            connection.close();
-        }catch(SQLException e) {
-            loggerDataBase.error("Error occurred in Database class: ", e);
+            properties.load(input);
+        }catch (IOException e){
+            loggerDataBase.error("Error occurred while reading config file", e);
+        }
+
+        url = properties.getProperty("url");
+        user = properties.getProperty("user");
+        pass = properties.getProperty("pass");
+
+        definitionOfCommand();
+
+        if (command.equals("INFO")){
+            getInfo();
+        } else {
+            try{
+                Class.forName("com.mysql.cj.jdbc.Driver"); // Загружаем JDBC драйвер
+                connection = DriverManager.getConnection(url, user, pass);
+                System.out.println("I AM IN DATABASE");
+                switch (enumCommands){
+                    case ADD -> addDataInDB();
+                    case WEEK -> showResultLastWeek();
+                    case MONTH -> showResultLastMonth();
+                    case HALFYEAR -> showResultLastHalfYear();
+                    case GRAPH -> sendGraph();
+                    default -> Bot.response.setText("Sorry, I don`t understand you.");
+                }
+                connection.close();
+            } catch(ClassNotFoundException  | SQLException e) {
+                loggerDataBase.error("Error occurred in Database class: ", e);
+            }
         }
     }
 
@@ -268,7 +309,7 @@ public class DataBase {
             axis.setDateFormatOverride(new SimpleDateFormat("yyyy-MM-dd"));
 
             //Сохранение графика в файл
-            ChartUtilities.saveChartAsPNG(new File("C:\\Personal\\Olga\\Study\\Gym-bot\\graph\\Exercises_Chart.png"), chart, 1800, 1200);
+            ChartUtilities.saveChartAsPNG(new File("C:\\OlgaZh\\01 Study\\Gym-bot\\graph\\Exercises_Chart.png"), chart, 1800, 1200);
 
         } catch (SQLException e){
             loggerDataBase.error("Error occurred in DataBase class (make graph)", e);
