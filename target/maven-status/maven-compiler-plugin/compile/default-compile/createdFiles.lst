@@ -3,5 +3,4 @@ Main.class
 EnumCommands.class
 UserMessage.class
 DataBase$1.class
-TcpConnectionPoolFactory.class
 Bot.class

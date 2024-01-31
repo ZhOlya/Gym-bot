@@ -70,6 +70,7 @@ public class UserMessage {
             System.out.println("Class UserMessage, text and method splitText: " + text + " " + partOne + partTwo + parThree + "\n");
         } else {
             System.out.println("Sorry. Input message doesn`t has three parts." + partOne + partTwo + parThree + "\n");
+            Bot.response.setText("Sorry. Input message doesn`t has three parts.");
         }
     }
 

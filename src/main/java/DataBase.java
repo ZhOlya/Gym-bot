@@ -272,7 +272,7 @@ public class DataBase {
                      System.out.println("Make new series: " + nameExercise);//вывод в консоль, что мы создали новую серию
                  }
                  //Добавляем данные в серию
-                 series.add(new Day(date), quantity);
+                 series.addOrUpdate(new Day(date), quantity);
                  System.out.println("Added to series '" + nameExercise + "': " + date + ", " + quantity);//вывод в консоль доавляемых данных
              }
 
